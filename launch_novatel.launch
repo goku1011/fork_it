@@ -1,0 +1,9 @@
+<launch>
+	<group ns="novatel">
+			<include file="$(novatel_gps_driver)/launch/test_serial.launch"/>
+			<node pkg="ntripclient" type="startntripclient.sh" name="ntripclient" output="screen"/>
+			<include file="$(novatel_span_driver)/launch/example.launch">
+				<arg name = "ip" value="192.168.0.20">
+			</include>
+	</group>
+</launch>
