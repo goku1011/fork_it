@@ -1,0 +1,14 @@
+<!-- -->
+<launch>
+
+  <arg name="use_gpu" default="false" />
+  <arg name="use_fast_pcl" default="false" />
+  <arg name="use_openmp" default="false" />
+  <arg name="use_imu" default="false" />
+  <arg name="use_odom" default="false" />
+  <arg name="imu_upside_down" default="false" />
+  <arg name="imu_topic" default="/imu_raw" />
+
+  <node pkg="map_generation" type="map_generation" name="map_" output="screen"/>
+
+</launch>
