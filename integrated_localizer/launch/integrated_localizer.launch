@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<launch>
+
+<!--<include file="$(find can_slam)/launch/can.launch"/>-->
+<!--<include file="$(find vo_localizer)/launch/vo_localizer.launch"/>-->
+
+<param name="name" value="Integrated Localizer" />
+
+<!-- rosparam load "load file" -->
+<!--rosparam file="/home/king/Work/whole_localizer/catkin_ws/src/Mapping-Localization/ros_pkgs/integrated_localizer/param.yaml" command="load" /--> 
+<rosparam file="$(find integrated_localizer)/param.yaml" command="load" />  
+
+<!-- run node -->
+<!--node pkg="integrated_localizer" type="integrated_localizer_node" name="integrated_localizer" output="screen" -->
+  <!-- /node -->
+
+<!-- run nodelet -->
+<node pkg="nodelet" type="nodelet" name="standalone_nodelet_integrated" args="manager" output="screen"/>
+
+<node pkg="nodelet" type="nodelet" name="integrated_localizer_nodelet" args="load integrated_localizer/integrated_localizer_nodelet standalone_nodelet_integrated" output="screen">
+  </node>
+
+</launch>

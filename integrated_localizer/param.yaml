@@ -1,0 +1,77 @@
+# ROS topic name to subscribe and publish
+imu_data_msg_name: '/imu/data' #'/current_imu' #'/polyx_correctedIMU' #'/xsens/imu'
+camera_data_msg_name: '/camera'
+lidar_data_msg_name: '/velodyne_points'
+vo_pose_msg_name: '/slam_pose'
+
+lidar_pose_msg_name: '/ndt_pose' #'/ad_viz/pose'
+# gps_pose_msg_name: '/current_geopose'
+gps_pose_msg_name: '/gnss_pose'
+# gps_pose_msg_name: '/gnss_pose'
+
+output_pose_msg_name: '/integrated_pose'
+output_camera_pose_msg_name: '/integrated_camera_pose'
+output_camera_geopose_msg_name: '/integrated_camera_geopose'
+
+# Covariances. 16d vector for state and 7d vector for measurement. These should
+# be carefully tuned for optimal performance. (state = position, velocity, roation, acc_bias, gyro_bias)
+#init_state_cov: [5.0, 5.0, 1.0, 10.0, 10.0, 1.0, 0.05, 0.05, 0.05, 0.05, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+#state_noise: [0.00001, 0.00001, 0.000001,             # position
+#              0.00001, 0.00001, 0.000001,             # velocity
+#              0.00001, 0.00001, 0.0000001, 0.0000001, # orientation
+#              0.000000001, 0.000000001, 0.000000001,  # accelerometer bias
+#              0.000000001, 0.000000001, 0.000000001]  # gyroscope bias
+
+#gps_noise: [0.00000001, 0.00000001, 0.00000001, 0.00000001, 0.00000001, 0.00000001, 0.00000001]
+#lidar_noise: [0.0000001, 0.0000001, 0.0000000001, 0.00000001, 0.00000001, 0.00000001, 0.00000001]
+init_state_cov: [5.0, 5.0, 1.0, 10.0, 10.0, 1.0, 0.05, 0.05, 0.05, 0.05, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+state_noise: [0.0001, 0.0001, 0.0001,             # position
+              0.0001, 0.0001, 0.0001,             # velocity
+              0.0001, 0.0001, 0.0001, 0.0001, # orientation
+              0.001, 0.001, 0.001,  # accelerometer bias
+              0.001, 0.001, 0.001]  # gyroscope bias
+gps_noise: [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+lidar_noise: [0.00001, 0.00001, 0.00001, 0.00001, 0.00001, 0.00001, 0.00001]
+
+#H_mat : [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+#	  0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+#	  0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+#      	  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,
+#      	  0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,
+#      	  0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,
+#         0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0]
+
+# This specific parameters sets for UKF is to make sure we do not use negative weights that can make average rotation computation harder. This may not be optimal for performance.
+alpha: 0.001 #1.0
+beta: 2.0
+kappa: 0.1
+
+# This bool parameter is to check the unit of angular velocity of IMU.
+is_rad_per_sec: 0  # 1: rad/s    0: deg/s
+
+# This bool parameter is to choose which IMU data we use, polyExplore Corrected IMU or sensor_msgs::Imu
+is_sensor_msgs_imu: 1
+
+
+# This parameter is for the imu integration. We will add this attenuation parameter in the velocity and acceleration part to make sure the position NOT drift fast
+attenuation_coefficient: 0.04
+
+# TAI_offset
+TAI_offset: 0.0
+
+# Lidar to imu transformation. 12d vector for [R t]
+# 1, HDL32 Lidar (x right, y forward, z up), Xsens IMU (x forward, y left, z up)   --> rotate 90 degree by z axis
+#lidar_to_imu: [0.0, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+
+# 2, HDL32 Lidar (x right, y forward, z up), PolyExplore IMU raw data (x left, y forward, z down)  --> rotate 180 degree by y axis
+lidar_to_imu: [-1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0]
+
+# 3, HDL32 Lidar (x right, y forward, z up), PolyExplore IMU corrected data (x forward, y right, z down)  --> rotate 180 degree by y axis, then rotate 90 by z axis
+#lidar_to_imu: [0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0]
+
+# Camera to imu transformation. 12d vector for [R t]
+#1, Camera (x right, y down, z forward), PolyExplore IMU raw data (x left, y forward, z down)
+camera_to_imu: [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+
+# Rotation matrix from Camera to GPS
+Q_camera_2_gps: [0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0]

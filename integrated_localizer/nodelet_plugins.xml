@@ -1,0 +1,8 @@
+<library path="lib/libintegrated_localizer_nodelet"> 
+	<class name="integrated_localizer/integrated_localizer_nodelet" type="integrated_localizer::integrated_localizer_nodelet" base_class_type="nodelet::Nodelet"> 
+	<description> 
+		This is my nodelet. 
+	</description> 
+	</class> 
+</library>
+
